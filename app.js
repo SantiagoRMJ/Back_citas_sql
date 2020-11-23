@@ -3,24 +3,18 @@ const mysql = require('mysql2/promise');
 const app = express();
 const cors = require('cors')
 app.use(express.json());
-
-const sequelize  = require('./models');
-
-
+//const sequelize  = require('./models');
 const routerUser = require('./routers/router_usuarios');
 const routerCitas = require('./routers/router_citas');
+const validarToken = require('./services/validarToken')
 
-
-
-//CORS
 app.use(cors())
 app.get('/', (req, res) => {
     res.send('proyecto backend sequelize mysql');
 });
 
-
 app.use('/usuario', routerUser);
-app.use('/citas', routerCitas);
+app.use('/citas', validarToken.validarToken ,routerCitas);
 
 const PORT = process.env.PORT || 5000
 

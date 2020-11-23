@@ -16,11 +16,11 @@ createToken = (usuario) =>{
     }   
     return jwt.encode(payLoad, SECRET_KEY)
 }
+
 exports.registro = async (req, res) => {
     req.body.pass = bcrypt.hashSync(req.body.pass, 3);
     //let comprobar = await Usuario.findOne({ where: {email: req.body.email}});
     //console.log(comprobar.email)
-    console.log(req.body.email)
     //if(comprobar.email === req.body.email)return res.status(200).send({message: "el usuario ya existe"})
     
     try {
@@ -51,7 +51,7 @@ exports.eliminarUsuario = async (req, res) => {
     try {
         let data = await Usuario.findOne({ where: {email: req.body.email}});
         const email = await Usuario.destroy({where: {email: req.body.email}});
-        const pass = bcrypt.compareSync(req.body.pass, data.pass)
+        //const pass = bcrypt.compareSync(req.body.pass, data.pass)
         if (!email) return res.status(400).send({message: 'No se ha eliminado ningun usuario, revise los campos de correo y contraseña'});
         return res.status(200).send({message: 'Usuario eliminado correctamente'})
     } catch (error) {
@@ -65,9 +65,6 @@ exports.login = async (req, res)=>{
     const nombre = req.body.nombre;
     let data = await Usuario.findOne({ where: {email: req.body.email}});
     const pass =  bcrypt.compareSync(req.body.pass, data.pass);
-    console.log(data.pass)
-    console.log(pass)
-    console.log(req.body.pass)
     if(!nombre|| pass === null) return res.json({error: 'faltan datos'});
     if(pass === false) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
     else res.status(200).json({sucess: "usuario logeado correctamente", token: createToken(data)})

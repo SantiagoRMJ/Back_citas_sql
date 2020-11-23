@@ -18,7 +18,6 @@ exports.crearCita = async (req, res) => {
     }
 };
 
-
 exports.listarCitasUsuario = async (req, res) => {
     try {
         const citas = await Citas.findAll({where:{emailPaciente: req.query.emailPaciente}});
@@ -29,14 +28,12 @@ exports.listarCitasUsuario = async (req, res) => {
     }
 };
 
-
-
 exports.listarCitas = async (req, res) =>{
     const citas = await Citas.findAll()
     res.json({citas})
-    
-    
+       
 }
+
 exports.cancelarCita = async (req, res) => {
     try {
         let fecha = await Citas.findOne({ where: {fecha: req.body.fecha}});

@@ -34,5 +34,5 @@ const connection = mysql.createConnection({
     database: 'citas_db',
     password: '12345678'
 })
-.then(() => console.log('Sequelize ON'))
-.catch((error) => console.log('Sequelize OFF - ERROR CONECION', error));
+.then(() => console.log('Conectado a la base de datos'))
+.catch((error) => console.log('Error de conexion', error));

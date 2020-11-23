@@ -1,10 +1,30 @@
 const { Usuario, Citas} = require('../models/index');
 const bcrypt = require('bcryptjs')
+
 const usuario = require('../models/usuario');
+
+
+const jwt = require('jwt-simple')
 const moment = require('moment')
 
+const SECRET_KEY = "jkfbas88nadssbanw23ADSF"
 
 
+createToken = (usuario) =>{
+    const payLoad = {
+        id: usuario._id,
+        nombre: usuario.nombre,
+        pass: usuario.pass,
+        email: usuario.email,
+        role: usuario.rol,
+        createToken: moment().unix(),
+        exp: moment().add(3, "hours").unix()
+
+    }
+    
+    
+    return jwt.encode(payLoad, SECRET_KEY)
+}
 exports.registro = async (req, res) => {
     req.body.pass = bcrypt.hashSync(req.body.pass, 3);
     try {
@@ -50,7 +70,9 @@ exports.login = async (req, res)=>{
     if(!nombre|| !pass) return res.json({error: 'faltan datos'});
     const data = await Usuario.findAll({ where: {email: req.body.email}});
     console.log(data)
-    res.json({sucess: "usuario logeado correctamente"})
+    const token = createToken(usuario)
+    
+    res.json({sucess: "usuario logeado correctamente", token})
     if(!data) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
     return data;
     }catch(error){

@@ -9,10 +9,9 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
+    "jwt-simple": "^0.5.6",
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5",
-    "simple-jwt": "^1.0.3"
+    "sequelize": "^6.3.5"
   }
 }

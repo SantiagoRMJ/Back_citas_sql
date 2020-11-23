@@ -12,6 +12,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "simple-jwt": "^1.0.3"
   }
 }

@@ -1,6 +1,9 @@
 const { Usuario, Citas} = require('../models/index');
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const usuario = require('../models/usuario');
+const moment = require('moment')
+
+
 
 exports.registro = async (req, res) => {
     req.body.pass = bcrypt.hashSync(req.body.pass, 3);
@@ -19,7 +22,6 @@ exports.registro = async (req, res) => {
         res.status(500).send({message: 'El usuario no ha podido crearse correctamente'});
     }
 };
-
 
 exports.mostrarUsuarios = async (req, res) => {
     try {
@@ -48,6 +50,7 @@ exports.login = async (req, res)=>{
     if(!nombre|| !pass) return res.json({error: 'faltan datos'});
     const data = await Usuario.findAll({ where: {email: req.body.email}});
     console.log(data)
+    res.json({sucess: "usuario logeado correctamente"})
     if(!data) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
     return data;
     }catch(error){

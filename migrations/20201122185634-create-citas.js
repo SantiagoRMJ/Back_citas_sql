@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_usuario: {
+      UsuarioId: {
         allowNull: false,
         type: Sequelize.INTEGER
       },
@@ -21,6 +21,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       observaciones: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      emailPaciente:{
         allowNull: false,
         type: Sequelize.STRING
       },

@@ -15,10 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Citas.init({
-    id_usuario: DataTypes.INTEGER,
+    UsuarioId: DataTypes.INTEGER,
     fecha: DataTypes.DATE,
     id_doctor: DataTypes.INTEGER,
-    observaciones: DataTypes.STRING
+    observaciones: DataTypes.STRING,
+    emailPaciente:DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Citas',

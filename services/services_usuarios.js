@@ -1,6 +1,5 @@
 const {Usuario} = require('../models/index');
 const bcrypt = require('bcryptjs')
-const usuario = require('../models/usuario');
 const jwt = require('jwt-simple')
 const moment = require('moment')
 const SECRET_KEY = "jkfbas88nadssbanw23ADSF"
@@ -19,6 +18,11 @@ createToken = (usuario) =>{
 }
 exports.registro = async (req, res) => {
     req.body.pass = bcrypt.hashSync(req.body.pass, 3);
+    //let comprobar = await Usuario.findOne({ where: {email: req.body.email}});
+    //console.log(comprobar.email)
+    console.log(req.body.email)
+    //if(comprobar.email === req.body.email)return res.status(200).send({message: "el usuario ya existe"})
+    
     try {
         const nuevoUsuario = await Usuario.create({
             nombre: req.body.nombre,
@@ -26,11 +30,9 @@ exports.registro = async (req, res) => {
             email: req.body.email,
             rol: req.body.rol
         });
-        res.json({nuevoUsuario})
-        res.send({message: 'Usuario creado correctamente'});
+       
+        res.status(200).json({message: 'Usuario creado correctamente', nuevoUsuario:nuevoUsuario});
     } catch (error) {
-        console.error(error);
-        console.log(req.body)
         res.status(500).send({message: 'El usuario no ha podido crearse correctamente'});
     }
 };
@@ -47,9 +49,11 @@ exports.mostrarUsuarios = async (req, res) => {
 
 exports.eliminarUsuario = async (req, res) => {
     try {
+        let data = await Usuario.findOne({ where: {email: req.body.email}});
         const email = await Usuario.destroy({where: {email: req.body.email}});
-        if (!email) return res.status(400).send({message: 'Email no encontrado'});
-        res.status(200).send({message: 'Usuario eliminado correctamente'})
+        const pass = bcrypt.compareSync(req.body.pass, data.pass)
+        if (!email) return res.status(400).send({message: 'No se ha eliminado ningun usuario, revise los campos de correo y contraseña'});
+        return res.status(200).send({message: 'Usuario eliminado correctamente'})
     } catch (error) {
         console.error(error);
         res.status(500).send({message: 'Ha habido un problema al borrar el usuario'});
@@ -63,13 +67,13 @@ exports.login = async (req, res)=>{
     const pass =  bcrypt.compareSync(req.body.pass, data.pass);
     console.log(data.pass)
     console.log(pass)
+    console.log(req.body.pass)
     if(!nombre|| pass === null) return res.json({error: 'faltan datos'});
-    if(!data || pass === false) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
-    else res.status(200).json({sucess: "usuario logeado correctamente", success: createToken(data)})
+    if(pass === false) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
+    else res.status(200).json({sucess: "usuario logeado correctamente", token: createToken(data)})
     return data;
     }catch(error){
         console.error(error);
         res.status(500).send({message: 'Ha ocurrido un problema con el login'})
     }
 };
-

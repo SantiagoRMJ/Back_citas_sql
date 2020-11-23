@@ -1,14 +1,9 @@
-const { Usuario, Citas} = require('../models/index');
+const {Usuario} = require('../models/index');
 const bcrypt = require('bcryptjs')
-
 const usuario = require('../models/usuario');
-
-
 const jwt = require('jwt-simple')
 const moment = require('moment')
-
 const SECRET_KEY = "jkfbas88nadssbanw23ADSF"
-
 
 createToken = (usuario) =>{
     const payLoad = {
@@ -19,10 +14,7 @@ createToken = (usuario) =>{
         role: usuario.rol,
         createToken: moment().unix(),
         exp: moment().add(3, "hours").unix()
-
-    }
-    
-    
+    }   
     return jwt.encode(payLoad, SECRET_KEY)
 }
 exports.registro = async (req, res) => {
@@ -57,7 +49,7 @@ exports.eliminarUsuario = async (req, res) => {
     try {
         const email = await Usuario.destroy({where: {email: req.body.email}});
         if (!email) return res.status(400).send({message: 'Email no encontrado'});
-        res.send({message: 'Usuario eliminado correctamente'})
+        res.status(200).send({message: 'Usuario eliminado correctamente'})
     } catch (error) {
         console.error(error);
         res.status(500).send({message: 'Ha habido un problema al borrar el usuario'});
@@ -66,20 +58,18 @@ exports.eliminarUsuario = async (req, res) => {
 
 exports.login = async (req, res)=>{
     try{
-    const{nombre, pass} = req.body;
-    if(!nombre|| !pass) return res.json({error: 'faltan datos'});
-    const data = await Usuario.findAll({ where: {email: req.body.email}});
-    console.log(data)
-    const token = createToken(usuario)
-    
-    res.json({sucess: "usuario logeado correctamente", token})
-    if(!data) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
+    const nombre = req.body.nombre;
+    let data = await Usuario.findOne({ where: {email: req.body.email}});
+    const pass =  bcrypt.compareSync(req.body.pass, data.pass);
+    console.log(data.pass)
+    console.log(pass)
+    if(!nombre|| pass === null) return res.json({error: 'faltan datos'});
+    if(!data || pass === false) return res.json({error: 'ningún usuario coincide con tu usuario y contraseña'});
+    else res.status(200).json({sucess: "usuario logeado correctamente", success: createToken(data)})
     return data;
     }catch(error){
         console.error(error);
-        res.status.send({message: 'Ha ocurrido un problema con el login'})
+        res.status(500).send({message: 'Ha ocurrido un problema con el login'})
     }
 };
-
-
 
